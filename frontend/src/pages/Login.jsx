@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Auth.css";
 import InputField from "../components/InputField";
-
+import mixpanel from "../utils/mixpanel";
 const Login = () => {
   const [form, setForm] = useState({ userid: "", password: "" });
   const [error, setError] = useState("");
@@ -32,6 +32,8 @@ const Login = () => {
 
       const data = await res.json();
       login(data.userid, data.role);
+      mixpanel.track("Login Successful", { user_id: data.userid });
+
 
       // Redirect based on role
       if (data.role === "admin") {

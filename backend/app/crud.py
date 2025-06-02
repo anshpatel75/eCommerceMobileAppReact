@@ -117,12 +117,16 @@ def create_order(db: Session, order: schemas.OrderCreate):
     return db_order
 
 def create_order_from_cart(db: Session, order: schemas.OrderCreate):
+    # Create and add the order (but don't commit yet)
     new_order = models.Order(user_id=order.user_id)
     db.add(new_order)
-    db.commit()
-    db.refresh(new_order)
+    db.flush()  # Makes new_order.id available without committing
 
+    # Add all order items
     for item in order.items:
+        if not item.product_name:
+            raise HTTPException(status_code=400, detail="Missing product_name in item")
+
         db_item = models.OrderItem(
             order_id=new_order.id,
             product_id=item.product_id,
@@ -133,8 +137,11 @@ def create_order_from_cart(db: Session, order: schemas.OrderCreate):
         )
         db.add(db_item)
 
+    # Clear cart after placing the order
     db.query(models.CartItem).filter(models.CartItem.user_id == order.user_id).delete()
+
+    # Commit once — includes order, items, and cart clear
     db.commit()
+    db.refresh(new_order)
+
     return new_order
-
-

@@ -4,10 +4,7 @@ import "../styles/products.css";
 import { useCart } from "../context/CartContext";
 import mixpanel from "../utils/mixpanel";
 
-mixpanel.track("Page Viewed", {
-  page: "Landing Page",
-  user: "user123", // optional
-});
+
 
 const ITEMS_PER_PAGE = 8;
 

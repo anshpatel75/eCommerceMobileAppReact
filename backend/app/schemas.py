@@ -56,6 +56,11 @@ class CartItemOut(BaseModel):
     class Config:
         orm_mode = True
 
+class OrderItemOut(BaseModel):
+    product_name: str
+    price: float
+    quantity: int
+
 class OrderCreate(BaseModel):
     user_id: str
     items: List[CartItemCreate]

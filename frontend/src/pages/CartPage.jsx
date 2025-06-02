@@ -3,16 +3,27 @@ import { useCart } from "../context/CartContext";
 import "../styles/cart.css";
 import { useNavigate } from "react-router-dom";
 
-
-
-
 const CartPage = () => {
   const navigate = useNavigate();
   const { cart, removeFromCart, clearCart } = useCart();
   const totalPrice = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const handlePlaceOrder = async () => {
-    const user_id = localStorage.getItem("user_id");
+    const user = JSON.parse(localStorage.getItem("user"));
+    const user_id = user?.userid;
+
+    const payload = {
+    user_id: user_id,
+    items: cart.map(item => ({
+      product_id: parseInt(item.product_id),
+      product_name: item.product_name,
+      price: item.price,
+      quantity: item.quantity,
+      image: item.image,
+    })),
+  };
+
+  console.log("🚀 Payload being sent to backend:", payload);
 
     const res = await fetch("http://localhost:8000/orders/create", {
       method: "POST",
@@ -20,8 +31,8 @@ const CartPage = () => {
       body: JSON.stringify({
         user_id: user_id,
         items: cart.map(item => ({
-          product_id: item.product_id,       // ✅ must match backend type
-          product_name: item.product_name,   // ✅ if expected
+          product_id: parseInt(item.product_id),       // ✅ Ensure integer
+          product_name: item.product_name,
           price: item.price,
           quantity: item.quantity,
           image: item.image,
@@ -33,11 +44,9 @@ const CartPage = () => {
       throw new Error("Order creation failed");
     }
 
-    /*alert("Order placed successfully!");*/
     clearCart();
-    navigate("/order-placed"); // ✅ Redirect here
+    navigate("/order-placed");
   };
-
 
   return (
     <div className="cart-container">
@@ -61,7 +70,11 @@ const CartPage = () => {
               <td>{item.price}</td>
               <td>{item.quantity}</td>
               <td>{item.price * item.quantity}</td>
-              <td><button onClick={() => removeFromCart(item.product_id)}>Remove</button></td>
+              <td>
+                <button onClick={() => removeFromCart(item.product_id)}>
+                  Remove
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

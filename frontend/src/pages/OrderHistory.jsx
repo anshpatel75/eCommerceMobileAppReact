@@ -6,8 +6,9 @@ const OrderHistory = () => {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
+    const user_id = user?.userid;
     if (user) {
-      fetch(`http://localhost:8000/orders/history?user_id=${user.userid}`)
+      fetch(`http://localhost:8000/orders/history?user_id=${user_id}`)
         .then((res) => res.json())
         .then((data) => setHistory(data))
         .catch((err) => console.error("Error fetching history:", err));

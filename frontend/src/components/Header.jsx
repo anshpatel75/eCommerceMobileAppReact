@@ -19,19 +19,30 @@ const Header = () => {
     <header className="header">
       <h1>eCommerce App</h1>
       <nav className="nav-links">
-        {!isAdmin && currentPath !== "/" && <Link to="/">Home</Link>}
-        {!isAdmin && currentPath !== "/cart" && <Link to="/cart">Cart</Link>}
+        {/* Home shown on all pages except landing */}
+        {currentPath !== "/" && <Link to="/">Home</Link>}
 
+        {/* Cart link only for logged-in users (not admin) */}
+        {isLoggedIn && !isAdmin && currentPath !== "/cart" && <Link to="/cart">Cart</Link>}
+
+        {/* Orders link only for logged-in users (not admin) */}
         {isLoggedIn && !isAdmin && currentPath !== "/orders/history" && (
           <Link to="/orders/history">Orders</Link>
         )}
 
+        {/* Login button only shown on home if not logged in */}
         {!isLoggedIn && currentPath === "/" && <Link to="/login">Login</Link>}
 
+        {/* Logout for all logged-in users */}
         {isLoggedIn && (
           <span
             onClick={handleLogout}
-            style={{ cursor: "pointer", color: "white", textDecoration: "none", marginLeft: "15px" }}
+            style={{
+              cursor: "pointer",
+              color: "white",
+              textDecoration: "none",
+              marginLeft: "15px",
+            }}
           >
             Logout
           </span>
