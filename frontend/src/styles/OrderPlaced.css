@@ -1,0 +1,14 @@
+.order-placed-container {
+  text-align: center;
+  margin-top: 60px;
+}
+
+.view-orders-link {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 15px;
+  background-color: #333;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
