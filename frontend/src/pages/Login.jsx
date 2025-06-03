@@ -33,6 +33,8 @@ const Login = () => {
       const data = await res.json();
       login(data.userid, data.role);
       mixpanel.track("Login Successful", { user_id: data.userid });
+      // After successful login:
+      localStorage.setItem("user_id", data.userid);
 
 
       // Redirect based on role
